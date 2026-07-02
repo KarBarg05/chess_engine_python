@@ -1,6 +1,6 @@
 from pieces import piece_moves
 from helpers import chess_board
-from helpers import square_to_piece
+from helpers import get_piece
 from helpers import empty_square
 from helpers import is_white
 from helpers import is_black
@@ -21,7 +21,7 @@ class Board:
     def register_move(self, move, take_bool):
         origin_square = move[0]
         destination_square = move[1]
-        origin_piece = square_to_piece(self.board, origin_square)
+        origin_piece = get_piece(self.board, origin_square)
 
         piece = {
             "p": "",
@@ -67,8 +67,8 @@ class Board:
         return
 
     def move_piece(self, move):
-        origin_piece = square_to_piece(move[0])
-        destination_piece = square_to_piece(move[1])
+        origin_piece = get_piece(move[0])
+        destination_piece = get_piece(move[1])
 
         # for the register of the move in the game
         is_taking = True if is_opp(origin_piece, destination_piece) else False
@@ -86,7 +86,7 @@ class Board:
             for col in range(len(chess_board[0])):
                 moves = []
                 square = (row, col)
-                piece = square_to_piece(self.board, square)
+                piece = get_piece(self.board, square)
 
                 if empty_square(self.board, square):
                     continue

@@ -1,5 +1,5 @@
 from helpers import inbounds
-from helpers import square_to_piece
+from helpers import get_piece
 from helpers import empty_square
 from helpers import is_opp
 from helpers import is_ours
@@ -11,7 +11,7 @@ from helpers import sliding_sum
 def get_pawn_moves(board, row, col): 
     moves = []
     current_square = (row, col)
-    current_piece = square_to_piece(board, current_square)
+    current_piece = get_piece(board, current_square)
     
     if current_piece == "P": # white pawn
         adv_square = sliding_sum(current_square, straight_dirs["up"])
@@ -19,7 +19,8 @@ def get_pawn_moves(board, row, col):
         if inbounds(adv_square) and empty_square(board, adv_square):
             moves.append(adv_square)
 
-            if row == 6 and empty_square(board, (row - 2, col)): # initial "double move"
+            # initial "double move"
+            if row == 6 and empty_square(board, (row - 2, col)):
                 moves.append((row - 2, col))
         
         # capturable pieces
@@ -30,7 +31,7 @@ def get_pawn_moves(board, row, col):
             if not inbounds(capture_square):
                 continue
 
-            capture_piece = square_to_piece(board, capture_square)
+            capture_piece = get_piece(board, capture_square)
             if capture_piece == "k":
                 continue
 
@@ -55,7 +56,7 @@ def get_pawn_moves(board, row, col):
             if not inbounds(capture_square):
                 continue
 
-            capture_piece = square_to_piece(board, capture_square)
+            capture_piece = get_piece(board, capture_square)
             if capture_piece == "K":
                 continue
 
@@ -68,7 +69,7 @@ def get_pawn_moves(board, row, col):
 def get_knight_moves(board, row, col): 
     moves = []
     square = (row, col)
-    piece = square_to_piece(board, square)
+    piece = get_piece(board, square)
     
     possible_moves = ((row - 2, col - 1),
                       (row - 2, col + 1),
@@ -84,7 +85,7 @@ def get_knight_moves(board, row, col):
         if not inbounds(capture_square):
             continue
 
-        capture_piece = square_to_piece(board, capture_square)
+        capture_piece = get_piece(board, capture_square)
         if capture_piece.lower() == "k":
             continue
         
@@ -95,13 +96,14 @@ def get_knight_moves(board, row, col):
 
 def get_sliding_moves(board, row, col, dirs):
     moves = []
-    current_piece = square_to_piece(board, (row, col))
+    current_piece = get_piece(board, (row, col))
   
+    # compatible with all sliding moves, only dirs are different
     for dir in dirs:
         current_square = (row, col)
 
         next_square = sliding_sum(current_square, dir)
-        next_piece = square_to_piece(board, next_square)
+        next_piece = get_piece(board, next_square)
         if next_piece.lower() == "k":
             break
 
@@ -111,7 +113,7 @@ def get_sliding_moves(board, row, col, dirs):
             if empty_square(board, next_square):
                 current_square = next_square
                 next_square = sliding_sum(current_square, dir)
-            else:   # captura de pieza
+            else:       # captured piece
                 break
 
     return moves
@@ -128,13 +130,13 @@ def get_queen_moves(board, row, col):
 def get_king_moves(board, row, col):
     moves = []
     current_square = (row, col)
-    current_piece = square_to_piece(board, current_square)
+    current_piece = get_piece(board, current_square)
     dirs = list(straight_dirs.values) + list(diagonal_dirs.values)
 
     # normal moves
     for dir in dirs:
         next_square = sliding_sum(current_square, dir)
-        next_piece = square_to_piece(board, next_square)
+        next_piece = get_piece(board, next_square)
         if next_piece.lower() == "k":
             continue
         

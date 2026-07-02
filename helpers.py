@@ -17,28 +17,27 @@ def empty_board():
 def inbounds(square):
     return ((0 <= square[0] <= 7) and (0 <= square[1] <= 7))
 
-# cambiar nombre a get_piece
-def square_to_piece(board, square):
+def get_piece(board, square):
     return board[square[0]][square[1]]
 
 def empty_square(board, square):
-    return square_to_piece(board, square) == "."
+    return get_piece(board, square) == "."
 
 def is_white(board, square):
-    return square_to_piece(board, square).isupper()
+    return get_piece(board, square).isupper()
 
 def is_black(board, square):
-    return square_to_piece(board, square).islower()
+    return get_piece(board, square).islower()
 
 def is_opp(board, s1, s2): 
-    p1 = square_to_piece(board, s1)
-    p2 = square_to_piece(board, s2)
+    p1 = get_piece(board, s1)
+    p2 = get_piece(board, s2)
 
     return (is_white(p1) and is_black(p2)) or (is_black(p1) and is_white(p2))
 
 def is_ours(board, s1, s2):
-    p1 = square_to_piece(board, s1)
-    p2 = square_to_piece(board, s2)
+    p1 = get_piece(board, s1)
+    p2 = get_piece(board, s2)
     
     return (is_white(p1) and is_white(p2)) or (is_black(p1) and is_black(p2))
 
@@ -56,7 +55,7 @@ diagonal_dirs = {
     "upleft":      (-1, -1)
 }
 
-# suma posición con tupla de dirección
+# sums position with direction tuple
 def sliding_sum(square, dir):
     combined = zip(square, dir)
     new_square = tuple(map(sum, combined))
