@@ -10,7 +10,9 @@ from helpers import is_opp
 class Board:
     def __init__(self):
         self.board = chess_board
-        self.game_notation = [] # table
+        self.game_notation = []     # table
+        self.turn_count = 0
+        self.color = True           # True as White and False as Black
 
     def print(self):
         for row in self.board:
@@ -18,8 +20,8 @@ class Board:
 
     def register_move(self, move, take_bool):
         origin_square = move[0]
-        destination_square = move[0]
-        origin_piece = square_to_piece(origin_square)
+        destination_square = move[1]
+        origin_piece = square_to_piece(self.board, origin_square)
 
         piece = {
             "p": "",
@@ -55,7 +57,12 @@ class Board:
 
         move_str = ini_str + take_str + column[destination_square[0]] + str(destination_square[1])
 
-        self.game_notation.insert(move_str)
+        # move register "matrix"
+        if self.color:
+            self.turn_count += 1
+            self.game_notation.append([])
+        self.game_notation[(self.turn_count) - 1].append(move_str)
+        self.color = not self.color
 
         return
 
@@ -72,7 +79,7 @@ class Board:
 
         return
 
-    def get_all_moves(self, color):
+    def get_all_moves(self):
         moves = []
 
         for row in range(len(chess_board)):
@@ -85,7 +92,7 @@ class Board:
                     continue
 
                 # only white can move their own pieces, and same for black
-                if (color.lower() == "white" and is_white(self.board, square)) or (color.lower() == "black" and is_black(self.board, square)):
+                if (self.color == True and is_white(self.board, square)) or (self.color == False and is_black(self.board, square)):
                     get_moves = piece_moves[piece.lower()]
                     for move in get_moves(self.board, row, col):
                         moves.append((square, move))    # origin + end squares
